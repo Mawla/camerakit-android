@@ -961,7 +961,7 @@ public class Camera1 extends CameraImpl {
                     mMediaRecorder = null;
                     mCamera.lock();
                 } catch (Exception e){
-                    Log.d("", "");
+                    Log.d(TAG, "Couldn't release MediaRecorder");
                 }
             }
         }
