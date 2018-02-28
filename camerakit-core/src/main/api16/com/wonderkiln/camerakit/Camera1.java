@@ -142,7 +142,7 @@ public class Camera1 extends CameraImpl {
         }
         mShowingPreview = false;
 
-        releaseMediaRecorder();
+//        releaseMediaRecorder();
         releaseCamera();
         if (mFrameProcessor != null) {
             mFrameProcessor.cleanup();
@@ -692,11 +692,16 @@ public class Camera1 extends CameraImpl {
 
     private void setupPreview() {
         synchronized (mCameraLock) {
-            try {
-                mCamera.reconnect();
-                mCamera.setPreviewDisplay(mPreview.getSurfaceHolder());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if(mCamera != null) {
+                try {
+                    mCamera.reconnect();
+                    mCamera.setPreviewDisplay(mPreview.getSurfaceHolder());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else {
+                openCamera();
+                setupPreview();
             }
         }
     }
@@ -950,10 +955,14 @@ public class Camera1 extends CameraImpl {
     private void releaseMediaRecorder() {
         synchronized (mCameraLock) {
             if (mMediaRecorder != null) {
-                mMediaRecorder.reset();
-                mMediaRecorder.release();
-                mMediaRecorder = null;
-                mCamera.lock();
+                try {
+//                    mMediaRecorder.reset();
+                    mMediaRecorder.release();
+                    mMediaRecorder = null;
+                    mCamera.lock();
+                } catch (Exception e){
+                    Log.d("", "");
+                }
             }
         }
     }
